@@ -440,7 +440,7 @@ class BST(object):
 
     def get_node_path(self, node):
         """
-        Return a node path (list) to a certain node from root
+        Return the node path list to the given node from root
         """
         path = []
         self._get_node_path(self._root, node, path)
@@ -448,17 +448,13 @@ class BST(object):
 
     def get_node_parent(self, node):
         """
-        Return a node's parent
+        Return the parent node of the given node.
         """
-        if self._root is None:
-            return None
-
         path = self.get_node_path(node)
         if len(path) >= 2:
-            # the one before last node is the perent
+            # The one before last node is the parent node.
             return path[-2]
-        else:
-            return None
+        return None
 
     def get_nearest_common_parent(self, node1, node2):
         """
@@ -602,5 +598,11 @@ if __name__ == "__main__":
 
     node_100_path = bst.get_node_path(node_100)
     print "Node (100) path: %s" % node_100_path
+
+    node_unknown = Node(500)
+    node_unknown_path = bst.get_node_path(node_unknown)
+    print "Node (unknown) path: %s" % node_unknown_path
+
+    print "The parent of node (100): %s" % bst.get_node_parent(node_100)
 
     exit(0)
