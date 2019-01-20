@@ -7,115 +7,110 @@ Xiaowen Wang
 """
 
 import sys
-from py_tree.node import Node
+
+from node import Node
 
 
 class BST(object):
     """
-    Binary searching tree
+    Binary Searching Tree
     """
+
     def __init__(self):
-        """
-        Constructor to create a empty tree
-        """
         self._root = None
 
-    def get_root(self):
-        """
-        """
+    @property
+    def root(self):
         return self._root
 
-    def _insert(self, node, data):
-        """
-        Internal recursive insert method
-        """
-        if data < node.data:
+    def _insert(self, node, key, data):
+        if key < node.key:
             if node.left is None:
-                node.left = Node(data)
+                node.left = Node(key, data)
                 return node.left
             else:
-                return self._insert(node.left, data)
+                return self._insert(node.left, key, data)
         else:
             if node.right is None:
-                node.right = Node(data)
+                node.right = Node(key, data)
                 return node.right
             else:
-                return self._insert(node.right, data)
+                return self._insert(node.right, key, data)
 
-    def insert(self, data):
+    def insert(self, key, data=None):
         """
         Insert a node to the tree
         """
         if self._root is None:
-            self._root = Node(data)
+            self._root = Node(key, data)
             return self._root
         else:
-            return self._insert(self._root, data)
+            return self._insert(self._root, key, data)
 
-    def _traverse_inorder(self, node):
-        """
-        Internal in-order traverse
-        """
+    def _inorder(self, node):
         if node is None:
             return
 
-        self._traverse_inorder(node.left)
-        print node.data
-        self._traverse_inorder(node.right)
+        self._inorder(node.left)
+        sys.stdout.write(str(node) + ' ')
+        self._inorder(node.right)
 
-    def traverse_inorder(self):
+    def print_inorder(self):
         """
-        Traverse a tree in an in-order manner
+        Print the tree in an in-order manner
         """
         if self._root is None:
             print "The BST is empty"
-        else:
-            print "The current BST (in-order) is:"
-            self._traverse_inorder(self._root)
+            return
 
-    def _traverse_preorder(self, node):
-        """
-        Internal
-        """
+        print "The current BST (in-order) is:"
+        self._inorder(self._root)
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+
+    def _preorder(self, node):
         if node is None:
             return
 
-        print node.data
-        self._traverse_preorder(node.left)
-        self._traverse_preorder(node.right)
+        sys.stdout.write(str(node) + ' ')
+        self._preorder(node.left)
+        self._preorder(node.right)
 
-    def traverse_preorder(self):
+    def print_preorder(self):
         """
-        Traverse a tree in a pre-order manner
+        print the tree in a pre-order manner
         """
         if self._root is None:
             print "The BST is empty"
-        else:
-            print "The current BST (pre-order) is:"
-            self._traverse_preorder(self._root)
+            return
 
-    def _traverse_postorder(self, node):
-        """
-        Internal
-        """
+        print "The current BST (pre-order) is:"
+        self._preorder(self._root)
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+
+    def _postorder(self, node):
         if node is None:
             return
 
-        self._traverse_postorder(node.left)
-        self._traverse_postorder(node.right)
-        print node.data
+        self._postorder(node.left)
+        self._postorder(node.right)
+        sys.stdout.write(str(node) + ' ')
 
-    def traverse_postorder(self):
+    def print_postorder(self):
         """
-        Traverse a tree in a post-order manner
+        Print the tree in a post-order manner
         """
         if self._root is None:
             print "The BST is empty"
-        else:
-            print "The current BST (post-order) is:"
-            self._traverse_postorder(self._root)
+            return
 
-    def traverse_level_order(self):
+        print "The current BST (post-order) is:"
+        self._postorder(self._root)
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+
+    def print_level_order(self):
         """
         Breadth first search
         """
@@ -124,15 +119,14 @@ class BST(object):
             return
 
         # init a queue with root
-        queue = []
-        queue.append(self._root)
+        queue = [self._root]
 
         print "The current BST (level-order) is:"
 
         while len(queue) > 0:
             # print and pop the front of queue
-            print queue[0].data
             node = queue.pop(0)
+            sys.stdout.write(str(node) + ' ')
 
             # enqueue the left child
             if node.left:
@@ -142,33 +136,30 @@ class BST(object):
             if node.right:
                 queue.append(node.right)
 
-    def _lookup(self, node, data):
-        """
-        Internal search method
-        """
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+
+    def _lookup(self, node, key):
         if node is None:
             return None
 
-        if data == node.data:
+        if key == node.key:
             return node
 
-        if data < node.data:
-            return self._lookup(node.left, data)
+        if key < node.key:
+            return self._lookup(node.left, key)
         else:
-            return self._lookup(node.right, data)
+            return self._lookup(node.right, key)
 
-    def lookup(self, data):
+    def lookup(self, key):
         """
         Search a data in the tree
         """
-        if self._root is None:
-            return None
-        else:
-            return self._lookup(self._root, data)
+        return self._lookup(self._root, key)
 
     def _delete_node_with_child(self, node, child=None, parent=None):
         """
-        To delete the node with only one child
+        To delete the node with one or zero child
         """
         if parent:
             if parent.left is node:
@@ -178,15 +169,17 @@ class BST(object):
         else:
             self._root = child
 
-        # delete the current node
+        # Release the current node from memory
         node.left = None
         node.right = None
+        node.key = None
+        node.data = None
         del node
 
     @staticmethod
     def _find_min_node(node, parent=None):
         """
-        Find the min node from the subtree
+        Find the node with min key from the subtree
         """
         cur_node = node
         cur_parent = parent
@@ -195,149 +188,122 @@ class BST(object):
             cur_node = cur_node.left
         return cur_node, cur_parent
 
-    def _delete(self, node, data, parent=None):
-        """
-        Internal delete method
-        """
+    def _delete(self, node, key, parent=None):
         if node is None:
-            # No such node storing given data
             return
 
-        if data < node.data:
-            self._delete(node.left, data, parent=node)
+        if key < node.key:
+            self._delete(node.left, key, parent=node)
 
-        elif data > node.data:
-            self._delete(node.right, data, parent=node)
+        elif key > node.key:
+            self._delete(node.right, key, parent=node)
 
         else:
-            # Found the node
+            # Found the node to delete, there are 3 cases to deal with.
             if node.left and node.right:
-                # The node has both two chilren
-                successor, successor_p = self._find_min_node(node.right, parent=node)
+                # If the node has both two children,
+                successor, successor_parent = self._find_min_node(node.right, parent=node)
+                node.key = successor.key
                 node.data = successor.data
-                self._delete(successor, successor.data, successor_p)
+                self._delete(successor, successor.key, successor_parent)
 
             elif node.left:
-                # The node only has one left child
+                # If the node only has one left child,
+                # copy the left child to the node,
+                # and delete the node.
                 self._delete_node_with_child(node, child=node.left, parent=parent)
 
             elif node.right:
-                # The node only has one right child
+                # If the node only has one right child,
+                # copy the right child to the node,
+                # and delete the node.
                 self._delete_node_with_child(node, child=node.right, parent=parent)
 
             else:
-                # The node is a leaf
+                # If the node is a leaf, simply remove it from the tree.
                 self._delete_node_with_child(node, parent=parent)
 
-    def delete(self, data):
+    def delete(self, key):
         """
-        Remove a data from the tree
+        Remove a node from the tree
         """
-        if self._root is None:
-            return
-        else:
-            self._delete(self._root, data)
+        self._delete(self._root, key)
 
     def _is_valid(self, node, min_val, max_val):
-        """
-        Internal validation method
-        """
         if node is None:
             return True
 
-        if node.data < min_val or node.data > max_val:
+        if node.key < min_val or node.key > max_val:
             return False
 
-        return self._is_valid(node.left, min_val, node.data-1) and self._is_valid(node.right, node.data+1, max_val)
+        return (self._is_valid(node.left, min_val, node.key - 1) and
+                self._is_valid(node.right, node.key + 1, max_val))
 
     def is_valid(self):
         """
-        Is the BST valid?
+        The left subtree of a node contains only nodes with keys less than the node's key.
+        The right subtree of a node contains only nodes with keys greater than the node's key.
+        Both the left and right subtrees must also be binary search tree.
         """
-        if self._root is None:
-            return True
-        else:
-            return self._is_valid(self._root, -sys.maxint-1, sys.maxint)
+        return self._is_valid(self._root, -sys.maxint - 1, sys.maxint)
 
     def _get_num_of_node(self, node):
-        """
-        Internal calculaion of number of nodes
-        """
         if node is None:
             return 0
 
-        return self._get_num_of_node(node.left) + self._get_num_of_node(node.right) + 1
+        return 1 + (self._get_num_of_node(node.left) +
+                    self._get_num_of_node(node.right))
 
     def get_num_of_node(self):
         """
         Return the number of node in the tree
         """
-        if self._root is None:
-            return 0
-        else:
-            return self._get_num_of_node(self._root)
+        return self._get_num_of_node(self._root)
 
     def _get_num_of_leaf_node(self, node):
-        """
-        Internal
-        """
         if node is None:
             return 0
 
         if node.left is None and node.right is None:
             return 1
 
-        return self._get_num_of_leaf_node(node.left) + self._get_num_of_leaf_node(node.right)
+        return (self._get_num_of_leaf_node(node.left) +
+                self._get_num_of_leaf_node(node.right))
 
     def get_num_of_leaf_node(self):
         """
         Return the number of leaf node in the tree
         """
-        if self._root is None:
-            return 0
-        else:
-            return self._get_num_of_leaf_node(self._root)
+        return self._get_num_of_leaf_node(self._root)
 
     def _get_num_of_node_with_level(self, node, k):
-        """
-        Internal
-        """
-        if node is None:
+        if node is None or k < 1:
             return 0
 
         if k == 1:
             return 1
 
-        return self._get_num_of_node_with_level(node.left, k-1) + self._get_num_of_node_with_level(node.right, k-1)
+        return (self._get_num_of_node_with_level(node.left, k - 1) +
+                self._get_num_of_node_with_level(node.right, k - 1))
 
     def get_num_of_node_with_level(self, k):
         """
-        Return the number of node in the Kth level
+        Return the number of node in the level k.
         """
-        if self._root is None or k < 1:
-            return 0
-        else:
-            return self._get_num_of_node_with_level(self._root, k)
+        return self._get_num_of_node_with_level(self._root, k)
 
     def _get_max_depth(self, node):
-        """
-        """
         if node is None:
             return 0
 
-        max_l = self._get_max_depth(node.left)
-        max_r = self._get_max_depth(node.right)
-
-        return max(max_l, max_r) + 1
+        return 1 + max(self._get_max_depth(node.left),
+                       self._get_max_depth(node.right))
 
     def get_max_depth(self):
         """
         Return the depth of tree
         """
-        if self._root is None:
-            return 0
-        else:
-            return self._get_max_depth(self._root)
+        return self._get_max_depth(self._root)
 
     def _get_balance(self, node):
         """
@@ -346,66 +312,34 @@ class BST(object):
         if node is None:
             return 0
 
-        max_l = self._get_max_depth(node.left)
-        max_r = self._get_max_depth(node.right)
-
         # balance is left max depth - right max depth
-        return max_l - max_r
+        return abs(self._get_max_depth(node.left) -
+                   self._get_max_depth(node.right))
 
     def _is_balanced(self, node):
-        """
-        Internal
-        """
         if node is None:
             return True
 
-        bal = self._get_balance(node)
-
-        # 1. The height difference between left and right substee should be less than 1;
-        # 2. The left subtree is balanced;
-        # 3. The right subtree is balanced;
-        if abs(bal) <= 1 and self._is_balanced(node.left) and self._is_balanced(node.right):
+        if (self._get_balance(node) <= 1 and
+            self._is_balanced(node.left) and
+            self._is_balanced(node.right)):
             return True
 
         return False
 
     def is_balanced(self):
         """
-        Is this balanced BST?
+        The height difference between left and right subtree should be less than 1;
+        The left subtree is balanced;
+        The right subtree is balanced;
         """
-        if self._root is None:
-            return True
-        else:
-            return self._is_balanced(self._root)
-
-    #def __struct_cmp(self, node1, node2):
-    #    """
-    #    Internal
-    #    """
-    #    if node1 is None and node2 is None:
-    #        return True
-    #
-    #    if node1 is None or node2 is None:
-    #        return False
-    #
-    #    return self.__struct_cmp(node1.left, node2.left) and self.__struct_cmp(node1.right, node2.right)
-
-    #def struct_cmp(self, root):
-    #    """
-    #    Compare with another tree with the same strcture
-    #    """
-    #    if self._root is None and root is None:
-    #        return True
-    #
-    #    elif self._root is None or root is None:
-    #        return False
-    #
-    #    else:
-    #        return self.__struct_cmp(self._root, root)
+        return self._is_balanced(self._root)
 
     def is_complete(self):
         """
-        Is this a complete BST?
+        A complete binary tree is a binary tree in which every level,
+        except possibly the last, is completely filled,
+        and all nodes are as far left as possible.
         By using BFS, make a mark when for the first time encountering a non-full node
         """
         if self._root is None:
@@ -449,9 +383,6 @@ class BST(object):
         return True
 
     def _is_full(self, node):
-        """
-        Internal
-        """
         if node is None:
             return True
 
@@ -467,12 +398,10 @@ class BST(object):
 
     def is_full(self):
         """
-        Is this a full BST?
+        A full binary tree is a tree in which every node
+        other than the leaves has two children.
         """
-        if self._root is None:
-            return True
-        else:
-            return self._is_full(self._root)
+        return self._is_full(self._root)
 
     def _get_node_path(self, parent, node, path):
         """
@@ -611,56 +540,76 @@ class BST(object):
 
 if __name__ == "__main__":
 
-    # if len(sys.argv) != 3:
-    #     print "Wrong arguments, exiting"
-    #     print "Usage: " + sys.argv[0] + " <p1> <p2>"
-    #     exit(1)
-
+    # Create a BST
     bst = BST()
-
-    bst.insert(10)
-    bst.insert(9)
-    bst.insert(11)
-    bst.insert(7)
-    bst.insert(15)
+    bst.insert(50)
+    bst.insert(30)
     bst.insert(20)
-    bst.traverse_preorder()
-    bst.traverse_inorder()
-    bst.traverse_postorder()
-    bst.traverse_level_order()
+    bst.insert(40)
+    bst.insert(70)
+    bst.insert(60)
+    bst.insert(80)
 
+    # Traverse the BST
+    bst.print_inorder()
+    bst.print_preorder()
+    bst.print_postorder()
+    bst.print_level_order()
+
+    # Validate the BST
+    print "Is the BST valid? %s" % bst.is_valid()
+    print "Is the BST balanced? %s" % bst.is_balanced()
+    print "Is the BST full? %s" % bst.is_full()
+    print "The BST node num: %s" % bst.get_num_of_node()
+    print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
+    print "The BST depth: %s" % bst.get_max_depth()
+
+    # Perform a search in the BST
     search_target = 20
     target_node = bst.lookup(search_target)
     if target_node:
-        print "%s is found in the BST" % search_target
+        print "Node %s is found in the BST" % target_node
     else:
-        print "%s is NOT found in the BST" % search_target
+        print "Node %s is NOT found in the BST" % target_node
 
-    pth = bst.get_node_path(bst.get_root())
-    if len(pth) > 0:
-        print [n.data for n in pth]
+    # Remove root node 50
+    print "Removing root node (50)..."
+    bst.delete(50)
+    bst.print_inorder()
+    bst.print_level_order()
 
-    pth = bst.get_node_path(target_node)
-    if len(pth) > 0:
-        print [n.data for n in pth]
+    print "Is the BST valid? %s" % bst.is_valid()
+    print "Is the BST balanced? %s" % bst.is_balanced()
+    print "Is the BST full? %s" % bst.is_full()
+    print "The BST node num: %s" % bst.get_num_of_node()
+    print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
+    print "The BST depth: %s" % bst.get_max_depth()
 
-    print bst.get_nearest_common_parent(bst.get_root(), target_node).data
-    print bst.get_distance(bst.get_root(), target_node)
-    print bst.get_max_distance()
+#     pth = bst.get_node_path(bst.get_root())
+#     if len(pth) > 0:
+#         print [n.data for n in pth]
+#
+#     pth = bst.get_node_path(target_node)
+#     if len(pth) > 0:
+#         print [n.data for n in pth]
+#
+#     print bst.get_nearest_common_parent(bst.get_root(), target_node).data
+#     print bst.get_distance(bst.get_root(), target_node)
+#     print bst.get_max_distance()
 
-    #target_node = Node(100)
-    #path = bst.get_node_path(target_node)
-    #print path
+    # target_node = Node(100)
+    # path = bst.get_node_path(target_node)
+    # print path
 
-    #bst.delete(11);
-    #bst.traverse_inorder()
-    print bst.is_valid()
-    print bst.get_num_of_node()
-    print bst.get_num_of_leaf_node()
-    print bst.get_num_of_node_with_level(4)
-    print bst.get_max_depth()
-    print bst.is_balanced()
-    print bst.is_complete()
-    print bst.is_full()
+    # bst.delete(11);
+    # bst.traverse_inorder()
+#     print bst.is_valid()
+#     print bst.get_num_of_node()
+#     print bst.get_num_of_leaf_node()
+#     print bst.get_num_of_node_with_level(4)
+#     print bst.get_max_depth()
+#     print bst.is_balanced()
+#     print bst.is_complete()
+#     print bst.is_full()
 
     exit(0)
