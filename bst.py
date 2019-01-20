@@ -340,46 +340,45 @@ class BST(object):
         A complete binary tree is a binary tree in which every level,
         except possibly the last, is completely filled,
         and all nodes are as far left as possible.
-        By using BFS, make a mark when for the first time encountering a non-full node
         """
-        if self._root is None:
-            return True
+        # Create a queue with root in
+        queue = [self._root] if self._root is not None else []
 
-        # create a queue with root in
-        queue = []
-        queue.append(self._root)
-
-        # this will clip when for the fist time a non-full node is found
+        # By using breadth first traverse,
+        # mark down when the first non-full node is met.
         non_full_node_found = False
 
         while len(queue) > 0:
+            # Every time remove a parent node from the queue.
             node = queue.pop(0)
 
             if node.left:
-                # Exit point:
-                # if a non-full node has been found before,
-                # this node should not have any child
                 if non_full_node_found:
+                    # If a non-full node has been found before,
+                    # this node should not have any left child.
                     return False
-
-                queue.append(node.left)
+                else:
+                    # Otherwise continue to enqueue the left child.
+                    queue.append(node.left)
 
             else:
+                # Found the non-full node if no left child.
                 non_full_node_found = True
 
             if node.right:
-                # Eixt point:
-                # if a non-full node has been found before,
-                # this node should not have any right child
                 if non_full_node_found:
+                    # If a non-full node has been found before,
+                    # this node should not have any right child.
                     return False
-
-                queue.append(node.right)
+                else:
+                    # Otherwise continue to enqueue the right child.
+                    queue.append(node.right)
 
             else:
+                # Found the non-full node if no right child.
                 non_full_node_found = True
 
-        # If the tree can be traversed, then it is complete
+        # If the tree can be traversed by this BFT, then it is complete
         return True
 
     def _is_full(self, node):
@@ -560,6 +559,7 @@ if __name__ == "__main__":
     print "Is the BST valid? %s" % bst.is_valid()
     print "Is the BST balanced? %s" % bst.is_balanced()
     print "Is the BST full? %s" % bst.is_full()
+    print "Is the BST complete? %s" % bst.is_complete()
     print "The BST node num: %s" % bst.get_num_of_node()
     print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
     print "The BST depth: %s" % bst.get_max_depth()
@@ -581,6 +581,7 @@ if __name__ == "__main__":
     print "Is the BST valid? %s" % bst.is_valid()
     print "Is the BST balanced? %s" % bst.is_balanced()
     print "Is the BST full? %s" % bst.is_full()
+    print "Is the BST complete? %s" % bst.is_complete()
     print "The BST node num: %s" % bst.get_num_of_node()
     print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
     print "The BST depth: %s" % bst.get_max_depth()
