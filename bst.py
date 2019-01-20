@@ -443,7 +443,8 @@ class BST(object):
         Return the node path list to the given node from root
         """
         path = []
-        self._get_node_path(self._root, node, path)
+        if node is not None:
+            self._get_node_path(self._root, node, path)
         return path
 
     def get_node_parent(self, node):
@@ -458,7 +459,7 @@ class BST(object):
 
     def get_nearest_common_parent(self, node1, node2):
         """
-        Return the nearst common parent of two given nodes
+        Return the nearest common parent of the two given nodes.
         """
         if self._root is None:
             return None
@@ -466,29 +467,29 @@ class BST(object):
         if node1 is None or node2 is None:
             return None
 
+        # Get the path of node 1
         path1 = self.get_node_path(node1)
         if not path1:
             return None
 
+        # Get the path of node 2
         path2 = self.get_node_path(node2)
         if not path2:
             return None
 
-        ret_node = None
+        common_parent = None
 
         # If both two nodes can be found in the tree,
-        # then find the first different path node
-        while len(path1) and len(path2):
-            t_node1 = path1.pop(0)
-            t_node2 = path2.pop(0)
-
-            if t_node1.data == t_node2.data:
-                ret_node = t_node1
+        # the go through the two paths to find the last common element,
+        # which is the nearest common parent.
+        for n1, n2 in zip(path1, path2):
+            if n1 is n2:
+                common_parent = n1
                 continue
             else:
-                return ret_node
+                break
 
-        return ret_node
+        return common_parent
 
     def get_distance(self, node1, node2):
         """
@@ -595,9 +596,16 @@ if __name__ == "__main__":
 
     print "Inserting node (100)..."
     node_100 = bst.insert(100)
+    print "Inserting node (35)..."
+    node_35 = bst.insert(35)
 
     node_100_path = bst.get_node_path(node_100)
     print "Node (100) path: %s" % node_100_path
+    node_35_path = bst.get_node_path(node_35)
+    print "Node (35) path:  %s" % node_35_path
+
+    parent_35_100 = bst.get_nearest_common_parent(node_100, node_35)
+    print "The nearest common parent of node (100 & 35): %s" % parent_35_100
 
     node_unknown = Node(500)
     node_unknown_path = bst.get_node_path(node_unknown)
