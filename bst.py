@@ -413,43 +413,38 @@ class BST(object):
         return (num == (2 ** h - 1))
 
     def _get_node_path(self, parent, node, path):
-        """
-        Internal path search method
-        """
+        # If there is no more parent to the target node
+        # in this branch, just return.
         if parent is None:
             return False
 
+        # Then keep track of this parent node.
         path.append(parent)
 
+        # If target node is found, return positive.
         if node is parent:
             return True
 
+        # If not, continue to search the left side of subtree.
         if self._get_node_path(parent.left, node, path):
             return True
 
-        elif self._get_node_path(parent.right, node, path):
+        # If not, continue to search the right side of subtree.
+        if self._get_node_path(parent.right, node, path):
             return True
 
-        else:
-            path.pop()
-            return False
+        # If the target node cannot be found from both sides of subtree,
+        # remove the current parent node from the path record.
+        path.pop()
+        return False
 
     def get_node_path(self, node):
         """
         Return a node path (list) to a certain node from root
         """
-        if self._root is None:
-            return []
-
-        if node is self._root:
-            return [self._root]
-
         path = []
-
-        if self._get_node_path(self._root, node, path):
-            return path
-        else:
-            return []
+        self._get_node_path(self._root, node, path)
+        return path
 
     def get_node_parent(self, node):
         """
@@ -547,82 +542,65 @@ class BST(object):
         return max_l + max_r
 
 
-if __name__ == "__main__":
-
-    # Create a BST
-    bst = BST()
-    bst.insert(50)
-    bst.insert(30)
-    bst.insert(20)
-    bst.insert(40)
-    bst.insert(70)
-    bst.insert(60)
-    bst.insert(80)
-
-    # Traverse the BST
+def traverse_helper(bst):
     bst.print_inorder()
     bst.print_preorder()
     bst.print_postorder()
     bst.print_level_order()
 
-    # Validate the BST
-    print "Is the BST valid? %s" % bst.is_valid()
-    print "Is the BST balanced? %s" % bst.is_balanced()
-    print "Is the BST full? %s" % bst.is_full()
-    print "Is the BST complete? %s" % bst.is_complete()
-    print "Is the BST perfect? %s" % bst.is_perfect()
-    print "The BST node num: %s" % bst.get_num_of_node()
-    print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
-    print "The BST depth: %s" % bst.get_max_depth()
 
-    # Perform a search in the BST
-    search_target = 20
-    target_node = bst.lookup(search_target)
+def show_attr_helper(bst):
+    print "Is the BST valid?      %s" % bst.is_valid()
+    print "Is the BST balanced?   %s" % bst.is_balanced()
+    print "Is the BST full?       %s" % bst.is_full()
+    print "Is the BST complete?   %s" % bst.is_complete()
+    print "Is the BST perfect?    %s" % bst.is_perfect()
+    print "The BST node num:      %s" % bst.get_num_of_node()
+    print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
+    print "The BST max depth:     %s" % bst.get_max_depth()
+
+
+if __name__ == "__main__":
+
+    print "Creating a BST..."
+    bst = BST()
+    print "Inserting node (50)..."
+    bst.insert(50)
+    print "Inserting node (30)..."
+    bst.insert(30)
+    print "Inserting node (20)..."
+    bst.insert(20)
+    print "Inserting node (40)..."
+    bst.insert(40)
+    print "Inserting node (70)..."
+    bst.insert(70)
+    print "Inserting node (60)..."
+    bst.insert(60)
+    print "Inserting node (80)..."
+    bst.insert(80)
+
+    traverse_helper(bst)
+    show_attr_helper(bst)
+
+    target_key = 20
+    target_node = bst.lookup(target_key)
     if target_node:
         print "Node %s is found in the BST" % target_node
     else:
         print "Node %s is NOT found in the BST" % target_node
 
-    # Remove root node 50
-    print "Removing root node (50)..."
+    print "Removing node (50)..."
     bst.delete(50)
-    bst.print_inorder()
-    bst.print_level_order()
+    print "Removing node (20)..."
+    bst.delete(20)
 
-    print "Is the BST valid? %s" % bst.is_valid()
-    print "Is the BST balanced? %s" % bst.is_balanced()
-    print "Is the BST full? %s" % bst.is_full()
-    print "Is the BST complete? %s" % bst.is_complete()
-    print "Is the BST perfect? %s" % bst.is_perfect()
-    print "The BST node num: %s" % bst.get_num_of_node()
-    print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
-    print "The BST depth: %s" % bst.get_max_depth()
+    traverse_helper(bst)
+    show_attr_helper(bst)
 
-#     pth = bst.get_node_path(bst.get_root())
-#     if len(pth) > 0:
-#         print [n.data for n in pth]
-#
-#     pth = bst.get_node_path(target_node)
-#     if len(pth) > 0:
-#         print [n.data for n in pth]
-#
-#     print bst.get_nearest_common_parent(bst.get_root(), target_node).data
-#     print bst.get_distance(bst.get_root(), target_node)
-#     print bst.get_max_distance()
+    print "Inserting node (100)..."
+    node_100 = bst.insert(100)
 
-    # target_node = Node(100)
-    # path = bst.get_node_path(target_node)
-    # print path
-
-    # bst.delete(11);
-    # bst.traverse_inorder()
-#     print bst.is_valid()
-#     print bst.get_num_of_node()
-#     print bst.get_num_of_leaf_node()
-#     print bst.get_num_of_node_with_level(4)
-#     print bst.get_max_depth()
-#     print bst.is_balanced()
-#     print bst.is_complete()
-#     print bst.is_full()
+    node_100_path = bst.get_node_path(node_100)
+    print "Node (100) path: %s" % node_100_path
 
     exit(0)
