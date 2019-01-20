@@ -534,6 +534,32 @@ class BST(object):
         return (self._get_max_depth(self._root.left) +
                 self._get_max_depth(self._root.right))
 
+    def get_min_node(self):
+        """
+        Return the node with minimum key value
+        """
+        current = self._root
+
+        # Traverse the node from root to leftmost until the leaf.
+        # That leaf node is the node with minimum key value.
+        while current.left is not None:
+            current = current.left
+
+        return current
+
+    def get_max_node(self):
+        """
+        Return the node with maximum key value
+        """
+        current = self._root
+
+        # Traverse the node from root to rightmost until the leaf.
+        # That leaf node is the node with maximum key value.
+        while current.right is not None:
+            current = current.right
+
+        return current
+
 
 def traverse_helper(bst):
     bst.print_inorder()
@@ -552,6 +578,8 @@ def show_attr_helper(bst):
     print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
     print "The BST max depth:     %s" % bst.get_max_depth()
     print "The BST max breadth:   %s" % bst.get_max_distance()
+    print "The BST min node:      %s" % bst.get_min_node()
+    print "The BST max node:      %s" % bst.get_max_node()
 
 
 if __name__ == "__main__":
