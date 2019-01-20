@@ -402,6 +402,16 @@ class BST(object):
         """
         return self._is_full(self._root)
 
+    def is_perfect(self):
+        """
+        A Binary tree is Perfect Binary Tree in which all internal nodes
+        have two children and all leaves are at same level.
+        A perfect binary tree of height (h) has (2^h-1) nodes
+        """
+        h = self._get_max_depth(self._root)
+        num = self._get_num_of_node(self._root)
+        return (num == (2 ** h - 1))
+
     def _get_node_path(self, parent, node, path):
         """
         Internal path search method
@@ -560,6 +570,7 @@ if __name__ == "__main__":
     print "Is the BST balanced? %s" % bst.is_balanced()
     print "Is the BST full? %s" % bst.is_full()
     print "Is the BST complete? %s" % bst.is_complete()
+    print "Is the BST perfect? %s" % bst.is_perfect()
     print "The BST node num: %s" % bst.get_num_of_node()
     print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
     print "The BST depth: %s" % bst.get_max_depth()
@@ -582,6 +593,7 @@ if __name__ == "__main__":
     print "Is the BST balanced? %s" % bst.is_balanced()
     print "Is the BST full? %s" % bst.is_full()
     print "Is the BST complete? %s" % bst.is_complete()
+    print "Is the BST perfect? %s" % bst.is_perfect()
     print "The BST node num: %s" % bst.get_num_of_node()
     print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
     print "The BST depth: %s" % bst.get_max_depth()
