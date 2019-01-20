@@ -493,50 +493,46 @@ class BST(object):
 
     def get_distance(self, node1, node2):
         """
-        Return the distance between two nodes
+        Return the distance between the two given nodes
         """
         if self._root is None:
-            return None
+            return -1
 
         if node1 is None or node2 is None:
-            return None
+            return -1
 
         path1 = self.get_node_path(node1)
         if not path1:
-            return None
+            return -1
 
         path2 = self.get_node_path(node2)
         if not path2:
-            return None
+            return -1
 
-        # remove the common path
-        while len(path1) and len(path2):
-            if path1[0].data == path2[0].data:
-                path1.pop(0)
-                path2.pop(0)
-            else:
+        i = 0
+
+        # The distance between two nodes is to count the different nodes
+        # in both paths list.
+        for n1, n2 in zip(path1, path2):
+            if n1 is not n2:
                 break
+            i += 1
 
-        # the distance is the sum of those remaining path nodes
-        return len(path1) + len(path2)
+        dist1 = 0 if i >= len(path1) else len(path1[i:])
+        dist2 = 0 if i >= len(path2) else len(path2[i:])
+        return dist1 + dist2
 
     def get_max_distance(self):
         """
-        Return the max distance between two nodes in the tree
+        Return the distance between the two farthest nodes in the tree
         """
         if self._root is None:
-            return 0
+            return -1
 
-        max_l = 0
-        max_r = 0
-
-        if self._root.left:
-            max_l = self._get_max_depth(self._root.left)
-
-        if self._root.right:
-            max_r = self._get_max_depth(self._root.right)
-
-        return max_l + max_r
+        # The max breadth is the sum of the max depth of
+        # its left subtree and its right subtree.
+        return (self._get_max_depth(self._root.left) +
+                self._get_max_depth(self._root.right))
 
 
 def traverse_helper(bst):
@@ -555,6 +551,7 @@ def show_attr_helper(bst):
     print "The BST node num:      %s" % bst.get_num_of_node()
     print "The BST leaf node num: %s" % bst.get_num_of_leaf_node()
     print "The BST max depth:     %s" % bst.get_max_depth()
+    print "The BST max breadth:   %s" % bst.get_max_distance()
 
 
 if __name__ == "__main__":
@@ -606,6 +603,9 @@ if __name__ == "__main__":
 
     parent_35_100 = bst.get_nearest_common_parent(node_100, node_35)
     print "The nearest common parent of node (100 & 35): %s" % parent_35_100
+
+    dist_35_100 = bst.get_distance(node_100, node_35)
+    print "The distance between node (100 & 35): %s" % dist_35_100
 
     node_unknown = Node(500)
     node_unknown_path = bst.get_node_path(node_unknown)
