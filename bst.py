@@ -560,6 +560,47 @@ class BST(object):
 
         return current
 
+    def _inorder_k(self, node, stack, k, c):
+        if node is None or c[0] >= k:
+            return
+
+        self._inorder_k(node.left, stack, k, c)
+
+        c[0] += 1
+        if c[0] == k:
+            stack.append(node)
+            return
+
+        self._inorder_k(node.right, stack, k, c)
+
+    def get_kth_smallest_node(self, k):
+        """
+        Return the kth smallest node.
+        """
+        c = [0]  # A counter
+        stack = []  # A stack to save the target
+        self._inorder_k(self._root, stack, k, c)
+        return stack[0] if len(stack) else None
+
+    def _reserve_inorder_k(self, node, stack, k, c):
+        if node is None or c[0] >= k:
+            return
+
+        self._reserve_inorder_k(node.right, stack, k, c)
+
+        c[0] += 1
+        if c[0] == k:
+            stack.append(node)
+            return
+
+        self._reserve_inorder_k(node.left, stack, k, c)
+
+    def get_kth_largest_node(self, k):
+        c = [0]  # A counter
+        stack = []  # A stack to save the target
+        self._reserve_inorder_k(self._root, stack, k, c)
+        return stack[0] if len(stack) else None
+
 
 def traverse_helper(bst):
     bst.print_inorder()
@@ -640,5 +681,9 @@ if __name__ == "__main__":
     print "Node (unknown) path: %s" % node_unknown_path
 
     print "The parent of node (100): %s" % bst.get_node_parent(node_100)
+
+    bst.print_inorder()
+    print "The %sth smallest node: %s" % (3, bst.get_kth_smallest_node(3))
+    print "The %sth largest node: %s" % (3, bst.get_kth_largest_node(3))
 
     exit(0)
