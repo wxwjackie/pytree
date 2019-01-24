@@ -8,15 +8,7 @@ Xiaowen Wang
 
 import sys
 
-
-class HeapNode(object):
-    """
-    Heap Node
-    """
-
-    def __init__(self, key, data=None):
-        self.key = key
-        self.data = data
+from node import HeapNode
 
 
 class MinHeap(object):

@@ -8,7 +8,7 @@ Xiaowen Wang
 
 import sys
 
-from node import Node
+from node import BinaryNode
 
 
 class BST(object):
@@ -26,13 +26,13 @@ class BST(object):
     def _insert(self, node, key, data):
         if key < node.key:
             if node.left is None:
-                node.left = Node(key, data)
+                node.left = BinaryNode(key, data)
                 return node.left
             else:
                 return self._insert(node.left, key, data)
         else:
             if node.right is None:
-                node.right = Node(key, data)
+                node.right = BinaryNode(key, data)
                 return node.right
             else:
                 return self._insert(node.right, key, data)
@@ -42,7 +42,7 @@ class BST(object):
         Insert a node to the tree
         """
         if self._root is None:
-            self._root = Node(key, data)
+            self._root = BinaryNode(key, data)
             return self._root
         else:
             return self._insert(self._root, key, data)
@@ -676,7 +676,7 @@ if __name__ == "__main__":
     dist_35_100 = bst.get_distance(node_100, node_35)
     print "The distance between node (100 & 35): %s" % dist_35_100
 
-    node_unknown = Node(500)
+    node_unknown = BinaryNode(500)
     node_unknown_path = bst.get_node_path(node_unknown)
     print "Node (unknown) path: %s" % node_unknown_path
 

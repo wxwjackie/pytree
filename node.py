@@ -1,23 +1,18 @@
 #!/usr/bin/python
 
 """
-Node definition
+Node Definitions
 
 Xiaowen Wang
 """
 
 
-class Node(object):
+class NodeBase(object):
     """
-    Tree node structure
+    Node Base Class
     """
 
     def __init__(self, key, data=None):
-        """
-        Constructor to create a node
-        """
-        self.left = None
-        self.right = None
         self.key = key
         self.data = data
 
@@ -28,12 +23,29 @@ class Node(object):
         return "<Node key:%s data:%s>" % (self.key, self.data)
 
 
+class BinaryNode(NodeBase):
+    """
+    Binary Tree Node
+    """
+
+    def __init__(self, key, data=None):
+        super(BinaryNode, self).__init__(key, data)
+        self.left = None
+        self.right = None
+
+
+class HeapNode(NodeBase):
+    """
+    Heap Node
+    """
+
+
 if __name__ == "__main__":
 
-    n0 = Node(1)
+    n0 = BinaryNode(1)
     print n0
 
-    n1 = Node(2, 10)
+    n1 = BinaryNode(2, 10)
     print n1
 
     exit(0)
