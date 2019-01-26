@@ -33,6 +33,9 @@ class BinaryNode(NodeBase):
         self.left = None
         self.right = None
 
+    def is_leaf(self):
+        return self.left is None and self.right is None
+
 
 class HeapNode(NodeBase):
     """

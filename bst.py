@@ -313,14 +313,14 @@ class BST(object):
             return 0
 
         # balance is left max depth - right max depth
-        return abs(self._get_max_depth(node.left) -
-                   self._get_max_depth(node.right))
+        return (self._get_max_depth(node.left) -
+                self._get_max_depth(node.right))
 
     def _is_balanced(self, node):
         if node is None:
             return True
 
-        if (self._get_balance(node) <= 1 and
+        if (abs(self._get_balance(node)) <= 1 and
             self._is_balanced(node.left) and
             self._is_balanced(node.right)):
             return True

@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 """
-AVL tree example
+AVL (Adelson, Velski & Landis) Tree is height balancing binary search tree.
+AVL tree checks the height of the left and the right sub-trees,
+and assures that the difference is not more than 1.
 
 Xiaowen Wang
 """
@@ -11,14 +13,8 @@ from bst import BST
 
 class AVL(BST):
     """
-    AVL tree is a balanced binary searching tree
+    AVL Tree
     """
-
-    def __init__(self):
-        """
-        Constructor to create a empty tree
-        """
-        super(AVL, self).__init__()
 
     def _rotate_right(self, node):
         """
@@ -45,7 +41,7 @@ class AVL(BST):
 
     def _rotate_left(self, node):
         """
-        Left retation
+        Left rotation
         """
         parent = self.get_node_parent(node)
         is_left_child = False
@@ -92,13 +88,13 @@ class AVL(BST):
                 self._rotate_right(node.right)
             self._rotate_left(node)
 
-    def insert(self, data):
+    def insert(self, key, data=None):
         """
         Override
         Insert a node to the tree, still keeping balanced
         """
         # get new node
-        new_node = super(AVL, self).insert(data)
+        new_node = super(AVL, self).insert(key, data)
 
         if new_node is self._root:
             return self._root
@@ -111,7 +107,7 @@ class AVL(BST):
 
         return new_node
 
-    def _delete(self, node, data, parent=None):
+    def _delete(self, node, key, parent=None):
         """
         Internal delete method
         """
@@ -119,19 +115,20 @@ class AVL(BST):
             # No such node storing given data
             return
 
-        if data < node.data:
-            self._delete(node.left, data, parent=node)
+        if key < node.key:
+            self._delete(node.left, key, parent=node)
 
-        elif data > node.data:
-            self._delete(node.right, data, parent=node)
+        elif key > node.key:
+            self._delete(node.right, key, parent=node)
 
         else:
             # Found the node
             if node.left and node.right:
                 # The node has both two chilren
                 successor, successor_p = self._find_min_node(node.right, parent=node)
+                node.key = successor.key
                 node.data = successor.data
-                self._delete(successor, successor.data, successor_p)
+                self._delete(successor, successor.key, successor_p)
 
             elif node.left:
                 # The node only has one left child
@@ -157,11 +154,6 @@ class AVL(BST):
 
 if __name__ == "__main__":
 
-    # if len(sys.argv) != 3:
-    #     print "Wrong arguments, exiting"
-    #     print "Usage: " + sys.argv[0] + " <p1> <p2>"
-    #     exit(1)
-
     avl = AVL()
 
     avl.insert(1)
@@ -184,13 +176,13 @@ if __name__ == "__main__":
 
     path = avl.get_node_path(avl.get_root())
     if len(path) > 0:
-        print [node.data for node in path]
+        print [node.key for node in path]
 
     path = avl.get_node_path(target_node)
     if len(path) > 0:
-        print [node.data for node in path]
+        print [node.key for node in path]
 
-    print avl.get_nearest_common_parent(avl.get_root(), target_node).data
+    print avl.get_nearest_common_parent(avl.get_root(), target_node).key
     print avl.get_distance(avl.get_root(), target_node)
     print avl.get_max_distance()
 
