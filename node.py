@@ -36,8 +36,33 @@ class BinaryNode(NodeBase):
 
 class HeapNode(NodeBase):
     """
-    Heap Node
+    Binary Heap Node
     """
+
+
+class TrieNode(object):
+    """
+    Trie Tree Node
+    """
+
+    def __init__(self):
+        self.children = {}  # Points to children nodes
+        self.is_end = False  # Is the end of a word/key?
+        self.data = None  # Can store some extra content
+
+    def is_leaf(self):
+        """
+        True if the node is a leaf.
+        A leaf node has no any children.
+        """
+        return not self.children
+
+    def is_free(self):
+        """
+        True if the node is free to be deleted.
+        A free node should be a leaf and not marked as the end of key.
+        """
+        return self.is_leaf() and not self.is_end
 
 
 if __name__ == "__main__":

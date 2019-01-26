@@ -1,68 +1,84 @@
 #!/usr/bin/python
 
+"""
+Trie Operations
 
-class TrieNode(object):
-    """
-    A node class for trie tree
-    """
-    def __init__(self):
-        self.children = {}  # Dict to hold children nodes
-        self.is_end = False
-        # self.data = None
+Xiaowen Wang
+"""
 
-    def is_leaf(self):
-        """
-        True if the node is a leaf.
-        A leaf node has no any children.
-        """
-        return not self.children
-
-    def is_free(self):
-        """
-        True if the node is free to be deleted.
-        A free node should be a leaf and not marked as the end of key.
-        """
-        return self.is_leaf() and not self.is_end
+from node import TrieNode
 
 
 class Trie(object):
     """
-    A Trie Tree
+    Trie Tree
     """
+
     def __init__(self):
         self._root = TrieNode()
 
-    def insert(self, key):
+    def insert(self, key, data=None):
         """
-        Insert a key to the trie tree
+        Insert a key with data to trie.
         """
-        # From the root
-        p = self._root
+        assert isinstance(key, str)
+
+        node = self._root
 
         # If the character is already existing, move next;
         # otherwise create a new one and move on.
         for ch in key:
-            if not ch in p.children:
-                p.children[ch] = TrieNode()
+            if not ch in node.children:
+                node.children[ch] = TrieNode()
 
-            p = p.children[ch]
+            node = node.children[ch]
 
-        # until the last one, and mark it the end.
-        p.is_end = True
+        # Until the last one, and mark it the end and save the data
+        node.is_end = True
+        node.data = data
 
     def search(self, key):
         """
-        Search a key in trie tree
+        Search a key from trie, return the trie node.
         """
-        p = self._root
+        assert isinstance(key, str)
+
+        node = self._root
 
         for ch in key:
-            if not ch in p.children:
+            if not ch in node.children:
+                return None
+
+            node = node.children[ch]
+
+        if not node.is_end:
+            return None
+
+        return node
+
+    def _delete(self, node, key, i, l):
+        if node:
+            # Base case: reach the last character.
+            if i == l:
+                # Mark the node is not the end anymore.
+                node.is_end = False
+                # If the node is a leaf, it is save to delete it.
+                if node.is_leaf():
+                    return True
+                # else the node is being shared with other keys,
+                # it cannot be deleted yet.
                 return False
 
-            p = p.children[ch]
+            else:
+                # Recursively crawl down the tree.
+                if self._delete(node.children.get(key[i], None), key, i + 1, l):
+                    # Delete the child node if it is a leaf.
+                    del node.children[key[i]]
+                    # Climb up and check if the current node can be deleted.
+                    return node.is_free()
 
-        return p.is_end
+        # Key not found in trie.
+        return False
 
     def delete(self, key):
         """
@@ -72,44 +88,15 @@ class Trie(object):
         3. Key is part of other keys, just unmark the node;
         4. Other keys are prefix of the key, delete until the longest other key.
         """
-        l = len(key)
+        assert isinstance(key, str)
 
+        l = len(key)
         if l > 0:
             self._delete(self._root, key, 0, l)
 
-    def _delete(self, node, key, i, l):
-        """
-        Recursive innner deletion
-        """
-        if node:
-            # Base case: reach the last character
-            if i == l:
-                # Mark the node not the end anymore
-                node.is_end = False
-                # If the node is a leaf, we need to delete it.
-                if node.is_leaf():
-                    return True
-                # else the node is being shared, cannot delete it.
-                return False
-
-            else:
-                # Recursively crawl down the tree
-                if self._delete(node.children.get(key[i], None), key, i+1, l):
-                    # Delete the child if it is a leaf
-                    # and not the end for other keys.
-                    del node.children[key[i]]
-                    # Climb up
-                    # Checking the current node can be deleted or not.
-                    return node.is_free()
-
-        # Key not found case
-        return False
-
     def _display(self, node, key_str):
-        """
-        """
         if node.is_end:
-            print key_str
+            print "%s: %s" % (key_str, node.data)
 
         for ch in node.children:
             key_str += ch
@@ -120,34 +107,38 @@ class Trie(object):
         """
         Traverse the tree for all keys (depth first)
         """
-        print "Trie Content:"
-
+        print "The trie content:"
         if not self._root.is_leaf():
-            self._display(self._root, "")
-
-        print "*" * 15
+            self._display(self._root, '')
+        print ""
 
 
 if __name__ == '__main__':
 
+    print "Creating trie..."
     t = Trie()
+
+    print "Inserting (abc: 1)..."
+    t.insert("abc", data=1)
+    print "Inserting (abe: 2)..."
+    t.insert("abe", data=2)
+    print "Inserting (ab: 3)..."
+    t.insert("ab", data=3)
+
     t.display()
 
-    t.insert("abc")
-    t.insert("abe")
-    t.insert("ab")
-    t.display()
+    print "Search <abc>: %s" % t.search("abc")
+    print "Search <abe>: %s" % t.search("abe")
+    print "Search <ab> : %s" % t.search("ab")
 
-    print t.search("abc")
-    print t.search("abe")
-    print t.search("ab")
-
+    print "Deleting <abc>..."
     t.delete("abc")
+    print "Deleting <ab>..."
     t.delete("ab")
 
-    print t.search("abc")
-    print t.search("abe")
-    print t.search("ab")
+    print "Search <abc>: %s" % t.search("abc")
+    print "Search <abe>: %s" % t.search("abe")
+    print "Search <ab> : %s" % t.search("ab")
 
     t.display()
 
