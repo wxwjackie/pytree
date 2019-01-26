@@ -45,15 +45,20 @@ class Trie(object):
 
         node = self._root
 
+        # Traverse trie for each character in the key,
+        # if any character not found, just return none.
         for ch in key:
             if not ch in node.children:
                 return None
 
             node = node.children[ch]
 
+        # Here the end of key is reached, and check if it is a key end.
+        # If not, just return none.
         if not node.is_end:
             return None
 
+        # The key-end is found, return the node.
         return node
 
     def _delete(self, node, key, i, l):
@@ -94,23 +99,29 @@ class Trie(object):
         if l > 0:
             self._delete(self._root, key, 0, l)
 
-    def _display(self, node, key_str):
+    def _display(self, node, key_path):
+        # If the node is a key-end, print out the key and its value.
         if node.is_end:
-            print "%s: %s" % (key_str, node.data)
+            print "%s: %s" % (key_path, node.data)
 
+        # Then go through all the children node recursively.
         for ch in node.children:
-            key_str += ch
-            self._display(node.children[ch], key_str)
-            key_str = key_str[:-1]
+            # Add the current character to the key path
+            key_path += ch
+            # Recursive depth first traversal to the child
+            self._display(node.children[ch], key_path)
+            # Finished one child traversal, climb up one step,
+            # remove the last character from key path for another child traversal.
+            key_path = key_path[:-1]
 
     def display(self):
         """
         Traverse the tree for all keys (depth first)
         """
         print "The trie content:"
+
         if not self._root.is_leaf():
             self._display(self._root, '')
-        print ""
 
 
 if __name__ == '__main__':

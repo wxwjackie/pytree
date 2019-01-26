@@ -6,8 +6,6 @@ AVL tree example
 Xiaowen Wang
 """
 
-import sys
-from node import Node
 from bst import BST
 
 
@@ -15,6 +13,7 @@ class AVL(BST):
     """
     AVL tree is a balanced binary searching tree
     """
+
     def __init__(self):
         """
         Constructor to create a empty tree
@@ -43,7 +42,6 @@ class AVL(BST):
                 parent.left = new_p
         else:
             self._root = new_p
-
 
     def _rotate_left(self, node):
         """
@@ -196,12 +194,12 @@ if __name__ == "__main__":
     print avl.get_distance(avl.get_root(), target_node)
     print avl.get_max_distance()
 
-    #target_node = Node(100)
-    #path = avl.get_node_path(target_node)
-    #print path
+    # target_node = Node(100)
+    # path = avl.get_node_path(target_node)
+    # print path
 
-    #avl.delete(11);
-    #avl.traverse_inorder()
+    # avl.delete(11);
+    # avl.traverse_inorder()
     print avl.is_valid()
     print avl.get_num_of_node()
     print avl.get_num_of_leaf_node()
