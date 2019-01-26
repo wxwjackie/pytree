@@ -37,6 +37,16 @@ class BinaryNode(NodeBase):
         return self.left is None and self.right is None
 
 
+class RedBlackNode(BinaryNode):
+    """
+    Red-Black Tree Node
+    """
+
+    def __init__(self, key, data=None):
+        super(RedBlackNode, self).__init__(key, data)
+        self.is_red = False  # Red or black?
+
+
 class HeapNode(NodeBase):
     """
     Binary Heap Node

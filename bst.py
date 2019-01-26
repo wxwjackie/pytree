@@ -447,7 +447,7 @@ class BST(object):
             self._get_node_path(self._root, node, path)
         return path
 
-    def get_node_parent(self, node):
+    def get_parent(self, node):
         """
         Return the parent node of the given node.
         """
@@ -456,6 +456,36 @@ class BST(object):
             # The one before last node is the parent node.
             return path[-2]
         return None
+
+    def get_grandparent(self, node):
+        """
+        Return the grandparent node of the given node.
+        """
+        parent = self.get_parent(node)
+        if parent is None:
+            return None
+        return self.get_parent(parent)
+
+    def get_sibling(self, node):
+        """
+        Return the sibling node of the given node.
+        """
+        parent = self.get_parent(node)
+        if parent is None:
+            return None
+        if node is parent.left:
+            return parent.right
+        else:
+            return parent.left
+
+    def get_uncle(self, node):
+        """
+        Return the uncle node of the given node.
+        """
+        parent = self.get_parent(node)
+        if parent is None:
+            return None
+        return self.get_sibling(parent)
 
     def get_nearest_common_parent(self, node1, node2):
         """
@@ -680,7 +710,7 @@ if __name__ == "__main__":
     node_unknown_path = bst.get_node_path(node_unknown)
     print "Node (unknown) path: %s" % node_unknown_path
 
-    print "The parent of node (100): %s" % bst.get_node_parent(node_100)
+    print "The parent of node (100): %s" % bst.get_parent(node_100)
 
     bst.print_inorder()
     print "The %sth smallest node: %s" % (3, bst.get_kth_smallest_node(3))

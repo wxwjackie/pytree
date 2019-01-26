@@ -20,7 +20,7 @@ class AVL(BST):
         """
         Right rotation
         """
-        parent = self.get_node_parent(node)
+        parent = self.get_parent(node)
         is_right_child = False
 
         if parent:
@@ -43,7 +43,7 @@ class AVL(BST):
         """
         Left rotation
         """
-        parent = self.get_node_parent(node)
+        parent = self.get_parent(node)
         is_left_child = False
 
         if parent:
@@ -103,7 +103,7 @@ class AVL(BST):
             # balance the new tree from the new node to root
             while node:
                 self._balance_node(node)
-                node = self.get_node_parent(node)
+                node = self.get_parent(node)
 
         return new_node
 
